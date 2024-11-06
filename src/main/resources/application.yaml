@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    locations: ${FLAYWAY_LOCATIONS}
+    baseline-on-migrate: true
+  web:
+    resources:
+      add-mappings: false
+
+
+csv_file:
+  path_to_save_directory: "C:\\Users\\4amer\\Desktop\\Medical card service\\medical-record-service\\src\\main\\resources\\other"
+  file_name: "mkb10.csv"
+  json_hash_holder_file_path: "C:\\Users\\4amer\\Desktop\\Medical card service\\medical-record-service\\src\\main\\resources\\other\\hashControl.json"
+  source_path: "https://raw.githubusercontent.com/ak4nv/mkb10/master/mkb10.csv"
+
+
+refresh_mkb10_dictionary_interval:
+  cron: "0 0 4 * * ?"
+  time_zone: ""
+

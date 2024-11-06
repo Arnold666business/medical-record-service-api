@@ -1,0 +1,26 @@
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+
+csv_file:
+  path_to_save_directory: "C:\\Users\\4amer\\Desktop\\Medical card service\\medical-record-service\\src\\main\\resources\\other"
+  file_name: "mkb10.csv"
+  json_hash_holder_file_path: "C:\\Users\\4amer\\Desktop\\Medical card service\\medical-record-service\\src\\main\\resources\\other\\hashControl.json"
+  source_path: "https://raw.githubusercontent.com/ak4nv/mkb10/master/mkb10.csv"
+
+
+refresh_mkb10_dictionary_interval:
+  cron: "0 0 4 * * ?"
+  time_zone: ""
+
+server:
+  port: 0

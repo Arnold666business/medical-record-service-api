@@ -1,0 +1,933 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Medical card service Api",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Patient controller",
+      "description": "Patient data management"
+    },
+    {
+      "name": "Disease controller",
+      "description": "Manages patients diseases"
+    },
+    {
+      "name": "Mkb10 dictionary controller",
+      "description": "Managing data from the mkb10 dictionary"
+    }
+  ],
+  "paths": {
+    "/patient": {
+      "get": {
+        "tags": [
+          "Patient controller"
+        ],
+        "summary": "Getting a list of patients",
+        "description": "Allows you to get a list of all patients, if there are no patients then an empty list is returned",
+        "operationId": "getAllPatients",
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful return",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Patient controller"
+        ],
+        "summary": "Replace an existing patient",
+        "description": "Allows you to replace an entity with the declared one if they have equal IDs",
+        "operationId": "updatePatient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found 404 #1 \u003Cbr/\u003ENot found patient 404 #2 \u003Cbr/\u003E",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate oms number error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientErrorDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful return",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error when setting values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Patient controller"
+        ],
+        "summary": "Create a patient",
+        "description": "Allows adding new patients only with a unique compulsory medical insurance policy",
+        "operationId": "createPatient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientPersonalInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON request 100 #1 \u003Cbr\u003E Invalid parameter request type #2 ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate oms number error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientErrorDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error when setting values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful create patient",
+            "content": {
+              "application/json": {
+
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patient/{patient_id}/disease": {
+      "get": {
+        "tags": [
+          "Disease controller"
+        ],
+        "summary": "Getting a list of diseases",
+        "description": "Allows you to get a complete list of diseases of the specified user, in case of diseases returns an empty list",
+        "operationId": "getAllDisease",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "description": "Patient id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "0c565284-3676-4ca6-bcd0-b77de640872d"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found patient 404 #1 \u003Cbr/\u003EResource not found 404 #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Occurs when the type of the passed request parameter is missing 400 #1 \u003Cbr/\u003EInvalid parameter request type 400 #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful return",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseAllInfo"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Disease controller"
+        ],
+        "summary": "Update a disease",
+        "description": "Allows you to update information about a specific user's specified disease",
+        "operationId": "updateDisease",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiseaseAllInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "When trying to add a new disease, the patient finds out that he still has it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseCodeInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error when setting values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON request 400 #1 \u003Cbr/\u003EOccurs when the type of the passed request parameter is missing 400 #2 \u003Cbr/\u003EInvalid parameter request type 400 #3",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful update disease",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found 404 #1 \u003Cbr/\u003ENot found patient 404 br/\u003E #2Not found disease 404 #3",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Disease controller"
+        ],
+        "summary": "Creating a disease",
+        "description": "Allows you to add a disease for a patient with the specified ID.Diseases are compared by their mkb10 code. You cannot add a disease if it already exists in this patient without specifying the date of recovery. At the same time, if the disease being added is already present in the patient, but at the same time he has a recovery date that is earlier than the start date of an already existing incomplete disease, then you can add it. Control over other conflicts related to the same diseases remains with the client using the api, or with the administrators of the system used.",
+        "operationId": "createDisease",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiseaseGeneralInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found 404 #1 \u003Cbr/\u003ENot found patient 404 br/\u003E #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "When trying to add a new disease, the patient finds out that he still has it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseCodeInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error when setting values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON request 400 #1 \u003Cbr/\u003EOccurs when the type of the passed request parameter is missing 400 #2 \u003Cbr/\u003EInvalid parameter request type 400 #3",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful return"
+          }
+        }
+      }
+    },
+    "/dictionary/mkb10": {
+      "get": {
+        "tags": [
+          "Mkb10 dictionary controller"
+        ],
+        "summary": "Get all mkb10 information dtos",
+        "description": "Allows you to get all the values of the Mkb10 entity, which contains information about a specific disease, provided with a code, the code is the primary key of the table",
+        "operationId": "getAllMkb10Info",
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patient/{patient_id}": {
+      "delete": {
+        "tags": [
+          "Patient controller"
+        ],
+        "summary": "Delete patient",
+        "description": "Allows you to delete a patient with the specified ID if it exists",
+        "operationId": "deletePatient",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful delete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not find patient 404 #1 \u003Cbr/\u003EResource not found 404 #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Occurs when the type of the passed request parameter is missing 400 #1 \u003Cbr/\u003EInvalid parameter request type 400 #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patient/{patient_id}/disease/{disease_id}": {
+      "delete": {
+        "tags": [
+          "Disease controller"
+        ],
+        "summary": "Update a disease",
+        "description": "Allows you to update information about a specific user's specified disease",
+        "operationId": "deleteDisease",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "disease_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "The http method is not supported for this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found patient 404 #1 \u003Cbr/\u003ENot found disease 404 #2 \u003Cbr/\u003EResource not found 404 #3",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful delete disease"
+          },
+          "400": {
+            "description": "Occurs when the type of the passed request parameter is missing 400 #1 \u003Cbr/\u003EInvalid parameter request type 400 #2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PatientProfile": {
+        "required": [
+          "birth_date",
+          "first_name",
+          "gender",
+          "last_name",
+          "oms_number",
+          "patient_id"
+        ],
+        "type": "object",
+        "properties": {
+          "last_name": {
+            "maxLength": 100,
+            "minLength": 2,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "first_name": {
+            "maxLength": 43,
+            "minLength": 2,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "middle_name": {
+            "maxLength": 110,
+            "minLength": 0,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "gender": {
+            "maxLength": 20,
+            "minLength": 5,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "oms_number": {
+            "maxLength": 16,
+            "minLength": 16,
+            "pattern": "^\\d{16}$",
+            "type": "string"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ResponseError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Indicates the specific cause of the error",
+            "example": "Missing following statement: patient_id, type is UUID"
+          },
+          "errors": {
+            "type": "array",
+            "description": "Describes additional information about what happened, may be null",
+            "example": "Required request parameter id for method parameter type is present but converted to null",
+            "items": {
+              "type": "string",
+              "description": "Describes additional information about what happened, may be null",
+              "example": "Required request parameter id for method parameter type is present but converted to null"
+            }
+          }
+        },
+        "description": "An error model containing a message about the need and possibility of additional errors"
+      },
+      "PatientErrorDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Indicates the specific cause of the error",
+            "example": "Missing following statement: patient_id, type is UUID"
+          },
+          "errors": {
+            "type": "array",
+            "description": "Describes additional information about what happened, may be null",
+            "example": "Required request parameter id for method parameter type is present but converted to null",
+            "items": {
+              "type": "string",
+              "description": "Describes additional information about what happened, may be null",
+              "example": "Required request parameter id for method parameter type is present but converted to null"
+            }
+          },
+          "patient_id": {
+            "type": "string",
+            "description": "patient id",
+            "format": "uuid",
+            "example": "5b222500-c0fc-40ce-b24a-d35ae89deed7"
+          },
+          "oms_police": {
+            "type": "string",
+            "description": "patient oms police, 16 numbers",
+            "example": "1234567898765432"
+          }
+        }
+      },
+      "PatientResponseDto": {
+        "type": "object",
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "oms_number": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "violations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Violation"
+            }
+          }
+        }
+      },
+      "Violation": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "DiseaseAllInfo": {
+        "required": [
+          "disease_id",
+          "mkb10_code",
+          "prescription",
+          "start_date_of_disease"
+        ],
+        "type": "object",
+        "properties": {
+          "mkb10_code": {
+            "pattern": "^[A-Za-zА-Яа-яЁё0-9]+$",
+            "type": "string"
+          },
+          "start_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "prescription": {
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "disease_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "DiseaseCodeInfo": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Indicates the specific cause of the error",
+            "example": "Missing following statement: patient_id, type is UUID"
+          },
+          "errors": {
+            "type": "array",
+            "description": "Describes additional information about what happened, may be null",
+            "example": "Required request parameter id for method parameter type is present but converted to null",
+            "items": {
+              "type": "string",
+              "description": "Describes additional information about what happened, may be null",
+              "example": "Required request parameter id for method parameter type is present but converted to null"
+            }
+          },
+          "patientId": {
+            "type": "string",
+            "description": "patient id",
+            "format": "uuid",
+            "example": "5b222500-c0fc-40ce-b24a-d35ae89deed7"
+          },
+          "mkb10Code": {
+            "type": "string",
+            "description": "mkb10 code for disease",
+            "example": "W18.9"
+          }
+        }
+      },
+      "DiseaseResponseDto": {
+        "type": "object",
+        "properties": {
+          "disease_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mkb10_code": {
+            "type": "string"
+          },
+          "start_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "prescription": {
+            "type": "string"
+          }
+        }
+      },
+      "PatientPersonalInfo": {
+        "required": [
+          "birth_date",
+          "first_name",
+          "gender",
+          "last_name",
+          "oms_number"
+        ],
+        "type": "object",
+        "properties": {
+          "last_name": {
+            "maxLength": 100,
+            "minLength": 2,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "first_name": {
+            "maxLength": 43,
+            "minLength": 2,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "middle_name": {
+            "maxLength": 110,
+            "minLength": 0,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "gender": {
+            "maxLength": 20,
+            "minLength": 5,
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "oms_number": {
+            "maxLength": 16,
+            "minLength": 16,
+            "pattern": "^\\d{16}$",
+            "type": "string"
+          }
+        }
+      },
+      "DiseaseGeneralInfo": {
+        "required": [
+          "mkb10_code",
+          "prescription",
+          "start_date_of_disease"
+        ],
+        "type": "object",
+        "properties": {
+          "mkb10_code": {
+            "pattern": "^[A-Za-zА-Яа-яЁё0-9]+$",
+            "type": "string"
+          },
+          "start_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date_of_disease": {
+            "type": "string",
+            "format": "date"
+          },
+          "prescription": {
+            "pattern": "^[A-Za-zА-ЯЁа-яё]+(-[A-Za-zА-ЯЁа-яё]+)*$",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
