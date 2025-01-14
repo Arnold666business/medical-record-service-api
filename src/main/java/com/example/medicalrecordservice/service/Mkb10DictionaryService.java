@@ -9,4 +9,5 @@ public interface Mkb10DictionaryService {
     void refresh();
 
     List<Mkb10DiseaseInfoEntity> getAll();
+
 }

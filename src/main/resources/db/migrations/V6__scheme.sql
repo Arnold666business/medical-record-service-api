@@ -1,3 +1,0 @@
-ALTER TABLE patients
-DROP COLUMN oms_number,
-ADD COLUMN oms_number VARCHAR(16) NOT NULL UNIQUE

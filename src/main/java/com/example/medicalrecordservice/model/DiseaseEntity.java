@@ -9,7 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -42,22 +41,4 @@ public class DiseaseEntity {
     @JoinColumn(name = "patients_id")
     private PatientEntity patientEntity;
 
-    @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(o == null || o.getClass() != this.getClass()) return false;
-        return Objects.equals(((DiseaseEntity) o).getId(), this.getId());
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(id);
-    }
-
-    public boolean equalsByFields(DiseaseEntity disease){
-        return  Objects.equals(disease.getMkb10Code(), this.getMkb10Code()) &&
-                Objects.equals(disease.getStartDateOfDisease(), this.getStartDateOfDisease()) &&
-                Objects.equals(disease.getEndDateOfDisease(), this.getEndDateOfDisease()) &&
-                Objects.equals(disease.getPrescription(), this.getPrescription());
-    }
 }

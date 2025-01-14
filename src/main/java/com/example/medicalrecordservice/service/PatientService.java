@@ -13,4 +13,7 @@ public interface PatientService {
     PatientEntity update(PatientEntity newPatient);
 
     void delete(UUID patientId);
+
+    PatientEntity findByIdOrThrow(UUID patientId);
+
 }

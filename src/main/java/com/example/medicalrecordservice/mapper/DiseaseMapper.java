@@ -1,8 +1,8 @@
 package com.example.medicalrecordservice.mapper;
 
-import com.example.medicalrecordservice.dto.request.DiseaseAllInfo;
-import com.example.medicalrecordservice.dto.request.DiseaseGeneralInfo;
-import com.example.medicalrecordservice.dto.response.DiseaseResponseDto;
+import com.example.medicalrecordservice.controller.view.request.DiseaseAllInfo;
+import com.example.medicalrecordservice.controller.view.request.DiseaseGeneralInfo;
+import com.example.medicalrecordservice.controller.view.response.DiseaseResponseDto;
 import com.example.medicalrecordservice.model.DiseaseEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,9 +11,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DiseaseMapper {
-    @Mapping(target = "diseaseId", source = "id")
-    DiseaseAllInfo fromEntityToDiseaseAllInfo(DiseaseEntity diseaseEntity);
-
     List<DiseaseAllInfo> fromEntityListToDiseaseAllInfoList(List<DiseaseEntity> diseaseEntities);
 
     DiseaseEntity fromDiseaseGeneralInfoToEntity(DiseaseGeneralInfo diseaseGeneralInfo);
@@ -23,4 +20,5 @@ public interface DiseaseMapper {
 
     @Mapping(target = "diseaseId", source = "id")
     DiseaseResponseDto fromDiseaseEntityToResponseDto(DiseaseEntity diseaseEntity);
+
 }

@@ -15,13 +15,12 @@ import java.util.UUID;
 public class DiseaseErrorInfo extends ResponseError {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "disease_id")
-    @Schema(description = "disease id",
-            example = "5b222500-c0fc-40ce-b24a-d35ae89deed7")
+    @Schema(description = "disease id", example = "5b222500-c0fc-40ce-b24a-d35ae89deed7")
     private UUID id;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "mkb10_code")
-    @Schema(description = "mkb10 Code",
-            example = "Z42.3")
+    @Schema(description = "mkb10 Code", example = "Z42.3")
     private String mkb10Code;
+
 }

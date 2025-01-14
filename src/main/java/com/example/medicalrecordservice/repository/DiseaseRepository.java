@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Repository
 public interface DiseaseRepository extends JpaRepository<DiseaseEntity, UUID> {
-    Optional<DiseaseEntity> findDiseaseEntityByPatientEntityAndMkb10CodeAndEndDateOfDiseaseIsNull(PatientEntity patientEntity,
-                                                                                                  String mkb10Code);
+    Optional<DiseaseEntity> findDiseaseEntityByPatientEntityAndMkb10CodeAndEndDateOfDiseaseIsNull(PatientEntity patientEntity, String mkb10Code);
 
     Optional<DiseaseEntity> findDiseaseEntityByIdAndPatientEntity(UUID id, PatientEntity patientEntity);
+
 }

@@ -11,7 +11,6 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -52,32 +51,8 @@ public class PatientEntity {
     @OneToMany(mappedBy = "patientEntity", orphanRemoval = true)
     private List<DiseaseEntity> diseaseEntities = new ArrayList<>();
 
-    public void addDisease(DiseaseEntity disease){
+    public void addDisease(DiseaseEntity disease) {
         this.diseaseEntities.add(disease);
     }
 
-    public void removeDisease(DiseaseEntity disease){
-        this.diseaseEntities.remove(disease);
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(o == null || o.getClass() != this.getClass()) return false;
-        return Objects.equals(this.getId(), ((PatientEntity) o).getId());
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(id);
-    }
-
-    public boolean equalsByFields(PatientEntity patient){
-        return Objects.equals(this.getFirstName(), patient.getFirstName()) &&
-                Objects.equals(this.getLastName(), patient.getLastName()) &&
-                Objects.equals(this.getMiddleName(), patient.getMiddleName()) &&
-                Objects.equals(this.getGender(), patient.getGender()) &&
-                Objects.equals(this.getBirthDate(), patient.getBirthDate()) &&
-                Objects.equals(this.getOmsNumber(), patient.getOmsNumber());
-    }
 }

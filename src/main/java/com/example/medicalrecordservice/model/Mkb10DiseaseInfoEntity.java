@@ -21,6 +21,11 @@ public class Mkb10DiseaseInfoEntity {
     private String code;
 
     @NotNull
-    @Column(name = "disease_name")
+    @Column(name = "disease_name", length = 1000)
     private String diseaseName;
+
+    @NotNull
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
 }

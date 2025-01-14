@@ -11,4 +11,5 @@ import java.util.List;
 @Schema
 public class ValidationErrorResponse {
     private final List<Violation> violations;
+
 }

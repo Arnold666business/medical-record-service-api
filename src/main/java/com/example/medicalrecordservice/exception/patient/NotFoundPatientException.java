@@ -8,7 +8,8 @@ import java.util.UUID;
 public class NotFoundPatientException extends RuntimeException {
     private final UUID patientId;
 
-    public NotFoundPatientException(UUID patientId){
+    public NotFoundPatientException(UUID patientId) {
         this.patientId = patientId;
     }
+
 }

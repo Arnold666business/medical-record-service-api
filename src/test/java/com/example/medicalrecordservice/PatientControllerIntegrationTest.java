@@ -1,8 +1,8 @@
 package com.example.medicalrecordservice;
 
-import com.example.medicalrecordservice.dto.request.PatientPersonalInfo;
-import com.example.medicalrecordservice.dto.request.PatientProfile;
-import com.example.medicalrecordservice.dto.response.PatientResponseDto;
+import com.example.medicalrecordservice.controller.view.request.PatientPersonalInfo;
+import com.example.medicalrecordservice.controller.view.request.PatientProfile;
+import com.example.medicalrecordservice.controller.view.response.PatientResponseDto;
 import com.example.medicalrecordservice.mapper.PatientMapper;
 import com.example.medicalrecordservice.model.PatientEntity;
 import com.example.medicalrecordservice.service.PatientService;

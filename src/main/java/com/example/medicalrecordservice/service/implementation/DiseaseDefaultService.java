@@ -1,15 +1,17 @@
 package com.example.medicalrecordservice.service.implementation;
 
 import com.example.medicalrecordservice.exception.disease.ActiveDiseaseExistsException;
-import com.example.medicalrecordservice.helper.DiseaseHelper;
-import com.example.medicalrecordservice.helper.PatientHelper;
+import com.example.medicalrecordservice.exception.disease.NotFoundDiseaseException;
 import com.example.medicalrecordservice.model.DiseaseEntity;
 import com.example.medicalrecordservice.model.PatientEntity;
 import com.example.medicalrecordservice.repository.DiseaseRepository;
 import com.example.medicalrecordservice.service.DiseaseService;
+import com.example.medicalrecordservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +22,23 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DiseaseDefaultService implements DiseaseService {
+    private final static Logger logger = LoggerFactory.getLogger(DiseaseDefaultService.class);
+
     private final DiseaseRepository diseaseRepository;
 
-    private final PatientHelper patientHelper;
+    private final PatientService patientService;
 
-    private final DiseaseHelper diseaseHelper;
+    private final ApplicationContext applicationContext;
 
-    private final static Logger logger = LoggerFactory.getLogger(DiseaseDefaultService.class);
+    private DiseaseService getDiseaseService() {
+        return applicationContext.getBean(DiseaseService.class);
+    }
 
     @Override
     @Transactional(readOnly = true)
     public List<DiseaseEntity> getAll(UUID patientId) {
         logger.info("Call getAll method DiseaseService with patientId is {}", patientId);
-        PatientEntity patient = patientHelper.findByIdOrThrow(patientId);
+        PatientEntity patient = patientService.findByIdOrThrow(patientId);
         return patient.getDiseaseEntities();
     }
 
@@ -41,8 +47,8 @@ public class DiseaseDefaultService implements DiseaseService {
     public DiseaseEntity create(UUID patientId, DiseaseEntity disease) {
         logger.info("Cal create method DiseaseService with patientId is {}", patientId);
 
-        PatientEntity patient = patientHelper.findByIdOrThrow(patientId);
-        if(checkConflictsWithActiveDiseases(disease, patient)){
+        PatientEntity patient = patientService.findByIdOrThrow(patientId);
+        if (checkConflictsWithActiveDiseases(disease, patient)) {
             throw new ActiveDiseaseExistsException(patientId, disease.getMkb10Code());
         }
 
@@ -52,21 +58,17 @@ public class DiseaseDefaultService implements DiseaseService {
     }
 
     @Override
+    @Transactional
     public DiseaseEntity update(UUID patientId, DiseaseEntity newDisease) {
         logger.info("Cal update method DiseaseService with patientId is {}", patientId);
 
-        PatientEntity patient = patientHelper.findByIdOrThrow(patientId);
-        DiseaseEntity disease = diseaseHelper.findDiseaseByIdAndPatient(newDisease.getId(), patient);
-        if(checkConflictsWithActiveDiseases(disease, patient)){
+        PatientEntity patient = patientService.findByIdOrThrow(patientId);
+        DiseaseEntity disease = getDiseaseService().findDiseaseByIdAndPatient(newDisease.getId(), patient);
+        if (checkConflictsWithActiveDiseases(disease, patient)) {
             throw new ActiveDiseaseExistsException(patientId, disease.getMkb10Code());
         }
-
-        if(disease.equalsByFields(newDisease) ){
-            return disease;
-        }
-
-        newDisease.setPatientEntity(patient);
-        return diseaseRepository.save(newDisease);
+        BeanUtils.copyProperties(newDisease, disease, "id", "patient");
+        return disease;
     }
 
     @Override
@@ -74,18 +76,23 @@ public class DiseaseDefaultService implements DiseaseService {
     public void delete(UUID patientId, UUID diseaseId) {
         logger.info("Cal delete method DiseaseService with patientId is {}", patientId);
 
-        PatientEntity patient = patientHelper.findByIdOrThrow(patientId);
-        DiseaseEntity disease = diseaseHelper.findDiseaseByIdAndPatient(diseaseId, patient);
+        PatientEntity patient = patientService.findByIdOrThrow(patientId);
+        DiseaseEntity disease = getDiseaseService().findDiseaseByIdAndPatient(diseaseId, patient);
         diseaseRepository.delete(disease);
     }
 
-    public Optional<DiseaseEntity> activeDisease(PatientEntity patient, DiseaseEntity disease){
+    public Optional<DiseaseEntity> activeDisease(PatientEntity patient, DiseaseEntity disease) {
         return diseaseRepository.findDiseaseEntityByPatientEntityAndMkb10CodeAndEndDateOfDiseaseIsNull(patient, disease.getMkb10Code());
     }
 
-    public boolean checkConflictsWithActiveDiseases(DiseaseEntity disease, PatientEntity patient){
+    public boolean checkConflictsWithActiveDiseases(DiseaseEntity disease, PatientEntity patient) {
         Optional<DiseaseEntity> activeDisease = activeDisease(patient, disease);
-        return activeDisease.filter(diseaseEntity -> disease.getEndDateOfDisease() == null ||
-                !disease.getEndDateOfDisease().isBefore(diseaseEntity.getStartDateOfDisease())).isPresent();
+        return activeDisease.filter(diseaseEntity -> disease.getEndDateOfDisease() == null || !disease.getEndDateOfDisease().isBefore(diseaseEntity.getStartDateOfDisease())).isPresent();
     }
+
+    @Transactional(readOnly = true)
+    public DiseaseEntity findDiseaseByIdAndPatient(UUID diseaseId, PatientEntity patient) {
+        return diseaseRepository.findDiseaseEntityByIdAndPatientEntity(diseaseId, patient).orElseThrow(() -> new NotFoundDiseaseException(patient.getId(), diseaseId));
+    }
+
 }

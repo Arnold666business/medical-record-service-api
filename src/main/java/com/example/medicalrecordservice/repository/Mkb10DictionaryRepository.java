@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface Mkb10DictionaryRepository extends JpaRepository<Mkb10DiseaseInfoEntity, String> {
+
 }

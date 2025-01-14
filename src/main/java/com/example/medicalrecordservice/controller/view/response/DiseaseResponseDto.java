@@ -1,8 +1,6 @@
-package com.example.medicalrecordservice.dto.response;
+package com.example.medicalrecordservice.controller.view.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +9,6 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Builder
-@AllArgsConstructor
 public class DiseaseResponseDto {
     @JsonProperty("disease_id")
     private UUID diseaseId;
@@ -28,4 +24,5 @@ public class DiseaseResponseDto {
 
     @JsonProperty(value = "prescription")
     private String prescription;
+
 }

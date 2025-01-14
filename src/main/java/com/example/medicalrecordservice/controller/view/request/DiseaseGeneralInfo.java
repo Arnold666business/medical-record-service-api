@@ -1,4 +1,4 @@
-package com.example.medicalrecordservice.dto.request;
+package com.example.medicalrecordservice.controller.view.request;
 
 import com.example.medicalrecordservice.validation.constants.ExceptionValidationMessages;
 import com.example.medicalrecordservice.validation.constants.RegexpPatterns;
@@ -7,16 +7,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 @Data
 public class DiseaseGeneralInfo {
     @NotBlank(message = ExceptionValidationMessages.NOT_BLANK)

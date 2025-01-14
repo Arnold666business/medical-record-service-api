@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class PatientControllerAdvice {
     @ExceptionHandler(DuplicateOmsPolicyException.class)
-    public ResponseEntity<PatientErrorDto> duplicateOmsPolicyExceptionHandler(DuplicateOmsPolicyException exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(PatientErrorDto.builder()
-                .oms(exception.getOmsNumber())
-                .message("The number of the compulsory medical insurance policy must not be repeated.").build());
+    public ResponseEntity<PatientErrorDto> duplicateOmsPolicyExceptionHandler(DuplicateOmsPolicyException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(PatientErrorDto.builder().oms(exception.getOmsNumber()).message("The number of the compulsory medical insurance policy must not be repeated.").build());
     }
+
 }

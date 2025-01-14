@@ -15,13 +15,12 @@ import java.util.UUID;
 public class PatientErrorDto extends ResponseError {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "patient_id")
-    @Schema(description = "patient id",
-            example = "5b222500-c0fc-40ce-b24a-d35ae89deed7")
+    @Schema(description = "patient id", example = "5b222500-c0fc-40ce-b24a-d35ae89deed7")
     private UUID id;
 
     @JsonProperty(value = "oms_police")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(description = "patient oms police, 16 numbers",
-            example = "1234567898765432")
+    @Schema(description = "patient oms police, 16 numbers", example = "1234567898765432")
     private String oms;
+
 }

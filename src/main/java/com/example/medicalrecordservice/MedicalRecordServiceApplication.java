@@ -7,9 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class MedicalRecordServiceApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MedicalRecordServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MedicalRecordServiceApplication.class, args);
+    }
 
 }

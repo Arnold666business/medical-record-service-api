@@ -1,8 +1,8 @@
 package com.example.medicalrecordservice.controller;
 
-import com.example.medicalrecordservice.dto.request.PatientPersonalInfo;
-import com.example.medicalrecordservice.dto.request.PatientProfile;
-import com.example.medicalrecordservice.dto.response.PatientResponseDto;
+import com.example.medicalrecordservice.controller.view.request.PatientPersonalInfo;
+import com.example.medicalrecordservice.controller.view.request.PatientProfile;
+import com.example.medicalrecordservice.controller.view.response.PatientResponseDto;
 import com.example.medicalrecordservice.exception.error.ResponseError;
 import com.example.medicalrecordservice.exception.error.patient.PatientErrorDto;
 import com.example.medicalrecordservice.mapper.PatientMapper;
@@ -10,7 +10,6 @@ import com.example.medicalrecordservice.model.PatientEntity;
 import com.example.medicalrecordservice.service.PatientService;
 import com.example.medicalrecordservice.swagger.StandardApiResponses;
 import com.example.medicalrecordservice.validation.ValidationErrorResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +20,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,13 +31,12 @@ import java.util.UUID;
 @Tag(name = "Patient controller", description = "Patient data management")
 public class PatientController {
     private static final String GET_POST_PUT_PATIENT_ENDPOINT = "/patient";
+
     private static final String DELETE_PATIENT_ENDPOINT = "/patient/{patient_id}";
 
     private final PatientService patientService;
 
     private final PatientMapper patientMapper;
-
-
 
     @Operation(summary = "Getting a list of patients" ,
             description = "Allows you to get a list of all patients, if there are no patients then an empty list is returned")
@@ -52,16 +49,16 @@ public class PatientController {
                             schema = @Schema(implementation = ResponseError.class))),
     })
     @GetMapping(GET_POST_PUT_PATIENT_ENDPOINT)
-    public ResponseEntity<List<PatientResponseDto>> getAllPatients(){
+    @ResponseStatus(HttpStatus.OK)
+    public List<PatientResponseDto> getAllPatients(){
         List<PatientEntity> patientEntities = patientService.getAll();
-        return ResponseEntity.ok(patientMapper.toResponseDtoList(patientEntities));
+        return patientMapper.toResponseDtoList(patientEntities);
     }
-
 
     @Operation(summary = "Create a patient" ,
             description = "Allows adding new patients only with a unique compulsory medical insurance policy")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful create patient",
+            @ApiResponse(responseCode = "201", description = "Successful create patient",
                     content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Malformed JSON request 100 #1 <br> "+
                     "Invalid parameter request type #2 ",
@@ -78,12 +75,11 @@ public class PatientController {
                             schema = @Schema(implementation = PatientErrorDto.class)))
     })
     @PostMapping(value = GET_POST_PUT_PATIENT_ENDPOINT)
-    public ResponseEntity<Void> createPatient(@RequestBody @Valid PatientPersonalInfo patientRequest){
+    @ResponseStatus(HttpStatus.CREATED)
+    public PatientResponseDto createPatient(@RequestBody @Valid PatientPersonalInfo patientRequest){
         PatientEntity patient = patientService.create(patientMapper.patientPersonalInfoToEntity(patientRequest));
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location",
-                String.format("/patient/%s", patient.getId())).build();
+        return patientMapper.toResponseDto(patient);
     }
-
 
     @Operation(summary = "Replace an existing patient" ,
             description = "Allows you to replace an entity with the declared one if they have equal IDs")
@@ -108,11 +104,11 @@ public class PatientController {
                             schema = @Schema(implementation = PatientErrorDto.class)))
     })
     @PutMapping(GET_POST_PUT_PATIENT_ENDPOINT)
-    public ResponseEntity<PatientResponseDto> updatePatient(@RequestBody @Valid PatientProfile patientRequest){
+    @ResponseStatus(HttpStatus.OK)
+    public PatientResponseDto updatePatient(@RequestBody @Valid PatientProfile patientRequest){
         PatientEntity patient = patientService.update(patientMapper.patientProfileToEntity(patientRequest));
-        return ResponseEntity.ok(patientMapper.toResponseDto(patient));
+        return patientMapper.toResponseDto(patient);
     }
-
 
     @Operation(summary = "Delete patient" ,
             description = "Allows you to delete a patient with the specified ID if it exists")
@@ -132,9 +128,10 @@ public class PatientController {
                             schema = @Schema(implementation = ResponseError.class)))
     })
     @DeleteMapping(DELETE_PATIENT_ENDPOINT)
-    public ResponseEntity<Void> deletePatient(@PathVariable("patient_id") @Parameter(description = "Patient id",
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePatient(@PathVariable("patient_id") @Parameter(description = "Patient id",
             example = "0c565284-3676-4ca6-bcd0-b77de640872d") UUID patientId){
         patientService.delete(patientId);
-        return ResponseEntity.ok().build();
     }
+
 }

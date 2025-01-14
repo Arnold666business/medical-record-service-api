@@ -13,4 +13,5 @@ public class Violation {
 
     @JsonSerialize(using = SneakCaseSerializer.class)
     private final String message;
+
 }
